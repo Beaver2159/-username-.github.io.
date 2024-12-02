@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator and Lua Script</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #ffcccc; /* Light red background */
+        }
+        .calculator {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 3px solid red; /* Red stroke around the calculator */
+            border-radius: 8px; /* Rounded corners */
+            background-color: #fff; /* White background for calculator */
+        }
+        .calculator input[type="text"] {
+            width: 200px;
+            padding: 10px;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            border: 1px solid #ccc; /* Light gray border for input field */
+        }
+        .calculator button {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            margin: 5px;
+        }
+        .code-container {
+            border: 3px solid hotpink; /* Hot pink stroke around the Lua script */
+            padding: 15px;
+            background-color: #fafafa;
+            overflow: auto;
+            white-space: pre;
+            border-radius: 8px; /* Rounded corners */
+        }
+        h2 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Simple Calculator</h1>
+<div class="calculator">
+    <input type="text" id="result" disabled>
+    <br>
+    <button onclick="clearResult()">C</button>
+    <button onclick="appendToResult('1')">1</button>
+    <button onclick="appendToResult('2')">2</button>
+    <button onclick="appendToResult('3')">3</button>
+    <button onclick="appendToResult('+')">+</button>
+    <br>
+    <button onclick="appendToResult('4')">4</button>
+    <button onclick="appendToResult('5')">5</button>
+    <button onclick="appendToResult('6')">6</button>
+    <button onclick="appendToResult('-')">-</button>
+    <br>
+    <button onclick="appendToResult('7')">7</button>
+    <button onclick="appendToResult('8')">8</button>
+    <button onclick="appendToResult('9')">9</button>
+    <button onclick="appendToResult('*')">*</button>
+    <br>
+    <button onclick="appendToResult('0')">0</button>
+    <button onclick="calculateResult()">=</button>
+    <button onclick="appendToResult('/')">/</button>
+</div>
+
+<h2>Roblox Clicker Simulator Leaderstats DataStore</h2>
+<div class="code-container">
+<pre>
+local dataStoreService = game:GetService("DataStoreService")
+local clicksDataStore = dataStoreService:GetDataStore("Clicks") -- DONT CHANGE THIS IF YOU PUBLISHED YOUR GAME OR ELSE THE DATA WILL DISAPPEAR!!!
+local rebirthsDataStore = dataStoreService:GetDataStore("Rebirths") -- DONT CHANGE THIS IF YOU PUBLISHED YOUR GAME OR ELSE THE DATA WILL DISAPPEAR!!!
+local gemsDataStore = dataStoreService:GetDataStore("Gems") -- DONT CHANGE THIS IF YOU PUBLISHED YOUR GAME OR ELSE THE DATA WILL DISAPPEAR!!!
+
+game.Players.PlayerAdded:Connect(function(player)
+    local leaderstats = Instance.new("Folder", player)
+    leaderstats.Name = "leaderstats"
+    
+    local clicks = Instance.new("IntValue", leaderstats)
+    clicks.Name = "Clicks"
+    clicks.Value = 0
+    
+    local rebirths = Instance.new("IntValue", leaderstats)
+    rebirths.Name = "Rebirths"
+    rebirths.Value = 0
+    
+    local gems = Instance.new("IntValue", leaderstats)
+    gems.Name = "Gems"
+    gems.Value = 0
+    
+    local playerUserId = "player_"..player.UserId
+    
+    -- Loading data
+    local clicksData
+    local succes, errormessage = pcall(function()
+        clicksData = clicksDataStore:GetAsync(playerUserId)
+    end)
+    
+    if succes then
+        clicks.Value = clicksData
+    end
+    
+    --Loading Rebirthsdata
+    local rebirthsData
+    local succes, errormessage = pcall(function()
+        rebirthsData = rebirthsDataStore:GetAsync(playerUserId)
+    end)
+    
+    if succes then
+        rebirths.Value = rebirthsData
+    end
+    
+    --loading GemsData
+    local gemsData
+    local succes, errormessage = pcall(function()
+        gemsData = gemsDataStore:GetAsync(playerUserId)
+    end)
+    
+    if succes then 
+        gems.Value = gemsData
+    end
+end)
+
+-- Saving data
+game.Players.PlayerRemoving:Connect(function(player)
+    local playerUserId = "player_"..player.UserId
+    
+    local clicksValue = player.leaderstats.Clicks.Value
+    
+    local succes, errormessage = pcall(function()
+        clicksDataStore:SetAsync(playerUserId, clicksValue)
+    end)
+    
+    local rebirthsValue = player.leaderstats.Rebirths.Value
+
+    local succes, errormessage = pcall(function()
+        rebirthsDataStore:SetAsync(playerUserId, rebirthsValue)
+    end)
+    
+    local gemsValue = player.leaderstats.Gems.Value
+
+    local succes, errormessage = pcall(function()
+        gemsDataStore:SetAsync(playerUserId, gemsValue)
+    end)
+end)
+
+game:BindToClose(function(player)
+    for _, Player in pairs(game.Players:GetPlayers()) do
+        local playerUserId = "player_"..player.UserId
+
+        local clicksValue = player.leaderstats.Clicks.Value
+
+        local succes, errormessage = pcall(function()
+            clicksDataStore:SetAsync(playerUserId, clicksValue)
+        end)
+        local rebirthsValue = player.leaderstats.Rebirths.Value
+
+        local succes, errormessage = pcall(function()
+            rebirthsDataStore:SetAsync(playerUserId, rebirthsValue)
+        end)
+
+        local gemsValue = player.leaderstats.Gems.Value
+
+        local succes, errormessage = pcall(function()
+            gemsDataStore:SetAsync(playerUserId, gemsValue)
+        end)
+    end
+end)
+</pre>
+</div>
+
+<script>
+    function appendToResult(value) {
+        document.getElementById('result').value += value;
+    }
+
+    function clearResult() {
+        document.getElementById('result').value = '';
+    }
+
+    function calculateResult() {
+        const resultField = document.getElementById('result');
+        try {
+            resultField.value = eval(resultField.value);
+        } catch (e) {
+            resultField.value = 'Error';
+        }
+    }
+</script>
+
+</body>
+</html>
